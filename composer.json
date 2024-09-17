@@ -1,5 +1,5 @@
 {
-  "name": "yourusername/smart-text-ai",
+  "name": "Abdurazzoq789/smart-text-ai",
   "description": "Smart AI-based text-checking package",
   "type": "library",
   "require": {
@@ -9,7 +9,7 @@
   },
   "autoload": {
     "psr-4": {
-      "YourNamespace\\AI\\": "src/AI/"
+      "Abdurazzoq\\AI\\": "src/AI/"
     }
   },
   "require-dev": {
