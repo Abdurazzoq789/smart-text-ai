@@ -1,13 +1,13 @@
 <?php
 
-namespace SmartTextAi\providers\src;
+namespace SmartTextAi\providers;
 
-use SmartTextAi\auth\Authorization;
-use SmartTextAi\interfaces\AiProviderInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use SmartTextAi\auth\Authorization;
+use SmartTextAi\interfaces\AiProviderInterface;
 
 class OpenAiProvider implements AiProviderInterface
 {
