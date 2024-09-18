@@ -250,6 +250,33 @@ class OpenAiProvider implements AiProviderInterface
     }
 
     /**
+     * @throws \Exception
+     */
+    public function getBatchList()
+    {
+        $url = OpenAiUrl::listBatchUrl();
+        return $this->sendRequest([], $url);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getBatch(string $batch_id)
+    {
+        $url = OpenAiUrl::getBatchUrl($batch_id);
+        return $this->sendRequest([], $url);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function cancelBatch(string $batch_id)
+    {
+        $url = OpenAiUrl::cancelBatchUrl($batch_id);
+        return $this->sendRequest([], $url);
+    }
+
+    /**
      * @param array $data
      * @return string
      */
@@ -266,7 +293,7 @@ class OpenAiProvider implements AiProviderInterface
         $pathParts = explode('/', $path);
 
         if ($pathParts[1] == 'v1') {
-            return $pathParts[3] ?? '';
+            return $pathParts[2] ?? '';
         }
 
         return $pathParts[1] ?? '';

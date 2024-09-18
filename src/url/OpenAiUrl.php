@@ -224,4 +224,13 @@ class OpenAiUrl
     {
         return self::OPEN_AI_URL . "/batches";
     }
+
+    /**
+     * @param $batch_id
+     * @return string
+     */
+    public static function cancelBatchUrl($batch_id): string
+    {
+        return self::OPEN_AI_URL . "/batches/{$batch_id}/cancel";
+    }
 }
