@@ -16,11 +16,11 @@ class AiService
     /**
      * Check text using the selected AI provider.
      *
-     * @param array $array
+     * @param array $body
      * @return array
      */
-    public function checkText(array $array): array
+    public function checkText(array $body): array
     {
-        return $this->aiProvider->sendRequest($array);
+        return $this->aiProvider->checkText($body);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartTextAi;
+namespace SmartTextAi\url;
 
-class Url
+class OpenAiUrl
 {
     public const ORIGIN = 'https://api.openai.com';
     public const API_VERSION = 'v1';

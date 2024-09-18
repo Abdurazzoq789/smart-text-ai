@@ -5,6 +5,7 @@ namespace SmartTextAi;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use SmartTextAi\url\OpenAiUrl;
 
 class TextChecker
 {
@@ -29,7 +30,7 @@ class TextChecker
      */
     public function checkText(array $body): array
     {
-        $url = Url::chatUrl();
+        $url = OpenAiUrl::chatUrl();
         // Prepare the body as a JSON string
         $body = json_encode($body);
 

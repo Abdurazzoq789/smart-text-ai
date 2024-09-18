@@ -10,5 +10,7 @@ interface AiProviderInterface
      * @param array $body
      * @return array
      */
-    public function sendRequest(array $body): array;
+    public function sendRequest(array $body, string $url): array;
+
+    public function checkText(array $body): array;
 }
