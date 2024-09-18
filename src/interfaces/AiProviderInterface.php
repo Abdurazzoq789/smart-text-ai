@@ -12,4 +12,6 @@ interface AiProviderInterface
     public function sendRequest(array $body, string $url): AiResponseInterface;
 
     public function checkText(array $body): AiResponseInterface;
+
+    public function uploadFile(array $body);
 }
