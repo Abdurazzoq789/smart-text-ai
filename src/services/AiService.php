@@ -24,9 +24,4 @@ class AiService
     {
         return $this->aiProvider->checkText($body);
     }
-
-    public function uploadFile(array $body)
-    {
-        return $this->aiProvider->uploadFile($body);
-    }
 }

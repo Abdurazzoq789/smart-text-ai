@@ -25,13 +25,12 @@ class OpenAiProvider implements AiProviderInterface
 
     /**
      * @param array $body
-     * @return OpenAiResponse | OpenAiFileResponse | AiResponseInterface
+     * @return OpenAiResponse | OpenAiFileResponse | AiResponseInterface | true | OpenAiFileResponse[]
      * @throws \Psr\Http\Client\ClientExceptionInterface
      * @throws \Exception
      */
-    public function sendRequest(array $body, string $url): AiResponseInterface
+    public function sendRequest(array $body, string $url, string $method = 'POST')
     {
-        // Determine if the body contains a file
         $isMultipart = false;
         foreach ($body as $key => $value) {
             if (is_array($value) && isset($value['file'])) {
@@ -40,13 +39,11 @@ class OpenAiProvider implements AiProviderInterface
             }
         }
 
-        // Prepare headers
         $headers = [
             'Authorization' => $this->authorization->getHeaders()['Authorization'],
         ];
 
         if ($isMultipart) {
-            // Handle multipart data
             $multipart = [];
             foreach ($body as $name => $content) {
                 if (is_array($content) && isset($content['file'])) {
@@ -67,8 +64,13 @@ class OpenAiProvider implements AiProviderInterface
                 'headers' => $headers,
                 'multipart' => $multipart
             ];
+        } elseif ($method == 'GET') {
+            $headers['Content-Type'] = 'application/json';
+
+            $options = [
+                'headers' => $headers,
+            ];
         } else {
-            // Handle JSON data
             $headers['Content-Type'] = 'application/json';
             $body = json_encode($body);
 
@@ -78,25 +80,34 @@ class OpenAiProvider implements AiProviderInterface
             ];
         }
 
-        $response = $this->httpClient->request('POST', $url, $options);
+        $response = $this->httpClient->request($method, $url, $options);
 
         if ($response->getStatusCode() == 200) {
             $responseBody = $response->getBody()->getContents();
             $data = json_decode($responseBody, true);
 
-            // Return the custom class object
-            if ($isMultipart) {
+            if (!isset($data['object'])) {
+                return $data;
+            }
+
+            if ($data['deleted'] == true) {
+                return true;
+            }
+
+            if ($data['object'] == 'list') {
+                return array_map(fn($data) => new OpenAiFileResponse($data), $data['data']);
+            }
+
+            if ($data['object'] = 'file') {
                 return new OpenAiFileResponse($data);
             }
 
             return new OpenAiResponse($data);
         } else {
-            // Parse the response body to extract the error message if available
             $body = $response->getBody()->getContents();
             $errorData = json_decode($body, true);
             $errorMessage = $errorData['error']['message'] ?? 'Unknown error occurred';
 
-            // Throw an exception with the error message
             throw new \Exception('API request failed: ' . $errorMessage);
         }
     }
@@ -136,5 +147,41 @@ class OpenAiProvider implements AiProviderInterface
     {
         $url = OpenAiUrl::filesUrl();
         return $this->sendRequest($body, $url);
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     */
+    public function getFiles()
+    {
+        $url = OpenAiUrl::filesUrl();
+        return $this->sendRequest([], $url, 'GET');
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     */
+    public function getFile($id)
+    {
+        $url = OpenAiUrl::fileUrl($id);
+        return $this->sendRequest([], $url, 'GET');
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     */
+    public function getFileContent($id)
+    {
+        $url = OpenAiUrl::fileContentUrl($id);
+        return $this->sendRequest([], $url, 'GET');
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     */
+    public function deleteFile($id)
+    {
+        $url = OpenAiUrl::deleteFileUrl($id);
+        return $this->sendRequest([], $url, 'DELETE');
     }
 }

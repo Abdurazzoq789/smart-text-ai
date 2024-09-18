@@ -9,9 +9,9 @@ interface AiProviderInterface
      *
      * @param array $body
      */
-    public function sendRequest(array $body, string $url): AiResponseInterface;
+    public function sendRequest(array $body, string $url);
 
-    public function checkText(array $body): AiResponseInterface;
+    public function checkText(array $body);
 
     public function uploadFile(array $body);
 }

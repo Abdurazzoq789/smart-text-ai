@@ -111,6 +111,33 @@ class OpenAiUrl
      * @param
      * @return string
      */
+    public static function fileUrl($file_id): string
+    {
+        return self::OPEN_AI_URL . "/files/{$file_id}";
+    }
+
+    /**
+     * @param
+     * @return string
+     */
+    public static function deleteFileUrl($file_id): string
+    {
+        return self::OPEN_AI_URL . "/files/{$file_id}";
+    }
+
+    /**
+     * @param
+     * @return string
+     */
+    public static function fileContentUrl($file_id): string
+    {
+        return self::OPEN_AI_URL . "/files/{$file_id}/content";
+    }
+
+    /**
+     * @param
+     * @return string
+     */
     public static function fineTuneUrl(): string
     {
         return self::OPEN_AI_URL . "/fine_tuning/jobs";
