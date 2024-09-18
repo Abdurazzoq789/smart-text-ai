@@ -3,35 +3,33 @@
 namespace SmartTextAi\providers;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\HttpFactory;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 use SmartTextAi\auth\Authorization;
 use SmartTextAi\interfaces\AiProviderInterface;
+use SmartTextAi\interfaces\AiResponseInterface;
+use SmartTextAi\responses\openAi\OpenAiFileResponse;
 use SmartTextAi\responses\openAi\OpenAiResponse;
 use SmartTextAi\url\OpenAiUrl;
 
 class OpenAiProvider implements AiProviderInterface
 {
     private ClientInterface $httpClient;
-    private RequestFactoryInterface $requestFactory;
     private Authorization $authorization;
 
     public function __construct(Authorization $authorization)
     {
         $this->authorization = $authorization;
-        $this->requestFactory = new HttpFactory();
         $this->httpClient = new Client();
     }
 
     /**
      * @param array $body
-     * @return OpenAiResponse
+     * @return OpenAiResponse | OpenAiFileResponse | AiResponseInterface
      * @throws \Psr\Http\Client\ClientExceptionInterface
      * @throws \Exception
      */
-    public function sendRequest(array $body, string $url): OpenAiResponse
+    public function sendRequest(array $body, string $url): AiResponseInterface
     {
         // Determine if the body contains a file
         $isMultipart = false;
@@ -87,6 +85,10 @@ class OpenAiProvider implements AiProviderInterface
             $data = json_decode($responseBody, true);
 
             // Return the custom class object
+            if ($isMultipart) {
+                return new OpenAiFileResponse($data);
+            }
+
             return new OpenAiResponse($data);
         } else {
             // Parse the response body to extract the error message if available
@@ -104,17 +106,25 @@ class OpenAiProvider implements AiProviderInterface
      * @return OpenAiResponse
      * @throws ClientExceptionInterface
      */
-    public
-    function checkText(array $body): OpenAiResponse
+    public function checkText(array $body): OpenAiResponse
     {
         $url = OpenAiUrl::chatUrl();
         return $this->sendRequest($body, $url);
     }
 
-    public
-    function makeJsonl(array $array)
+    /**
+     * Converts an array of associative arrays to JSONL format.
+     *
+     * @param array $data Array of associative arrays to be converted.
+     * @return string The converted JSONL string.
+     */
+    public function makeJsonl(array $data): string
     {
+        $jsonlLines = array_map(function ($item) {
+            return json_encode($item);
+        }, $data);
 
+        return implode(PHP_EOL, $jsonlLines);
     }
 
     /**
@@ -122,8 +132,7 @@ class OpenAiProvider implements AiProviderInterface
      * @return OpenAiResponse
      * @throws ClientExceptionInterface
      */
-    public
-    function uploadFile(array $body): OpenAiResponse
+    public function uploadFile(array $body): OpenAiResponse
     {
         $url = OpenAiUrl::filesUrl();
         return $this->sendRequest($body, $url);
