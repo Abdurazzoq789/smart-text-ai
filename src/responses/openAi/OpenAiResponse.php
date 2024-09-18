@@ -41,4 +41,9 @@ class OpenAiResponse implements AiResponseInterface
     {
         return (int)$this->usage->total_tokens;
     }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
 }

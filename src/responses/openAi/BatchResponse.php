@@ -4,46 +4,46 @@ namespace SmartTextAi\responses\openAi;
 
 class BatchResponse
 {
-    private string $id;
-    private string $object;
-    private string $endpoint;
+    private ?string $id;
+    private ?string $object;
+    private ?string $endpoint;
     private ?string $inputFileId;
-    private string $completionWindow;
-    private string $status;
+    private ?string $completionWindow;
+    private ?string $status;
     private ?string $outputFileId;
     private ?string $errorFileId;
-    private int $createdAt;
-    private int $inProgressAt;
-    private int $expiresAt;
+    private ?int $createdAt;
+    private ?int $inProgressAt;
+    private ?int $expiresAt;
     private ?int $finalizingAt;
     private ?int $completedAt;
     private ?int $failedAt;
     private ?int $expiredAt;
     private ?int $cancellingAt;
     private ?int $cancelledAt;
-    private array $requestCounts;
-    private array $metadata;
+    private ?array $requestCounts;
+    private ?array $metadata;
 
     public function __construct(array $data)
     {
-        $this->id = $data['id'];
-        $this->object = $data['object'];
-        $this->endpoint = $data['endpoint'];
+        $this->id = $data['id'] ?? null;
+        $this->object = $data['object'] ?? null;
+        $this->endpoint = $data['endpoint'] ?? null;
         $this->inputFileId = $data['input_file_id'] ?? null;
-        $this->completionWindow = $data['completion_window'];
-        $this->status = $data['status'];
+        $this->completionWindow = $data['completion_window'] ?? null;
+        $this->status = $data['status'] ?? null;
         $this->outputFileId = $data['output_file_id'] ?? null;
         $this->errorFileId = $data['error_file_id'] ?? null;
-        $this->createdAt = $data['created_at'];
-        $this->inProgressAt = $data['in_progress_at'];
-        $this->expiresAt = $data['expires_at'];
+        $this->createdAt = $data['created_at'] ?? null;
+        $this->inProgressAt = $data['in_progress_at'] ?? null;
+        $this->expiresAt = $data['expires_at'] ?? null;
         $this->finalizingAt = $data['finalizing_at'] ?? null;
         $this->completedAt = $data['completed_at'] ?? null;
         $this->failedAt = $data['failed_at'] ?? null;
         $this->expiredAt = $data['expired_at'] ?? null;
         $this->cancellingAt = $data['cancelling_at'] ?? null;
         $this->cancelledAt = $data['cancelled_at'] ?? null;
-        $this->requestCounts = $data['request_counts'];
+        $this->requestCounts = $data['request_counts'] ?? null;
         $this->metadata = $data['metadata'] ?? [];
     }
 

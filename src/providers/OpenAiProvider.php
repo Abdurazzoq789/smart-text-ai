@@ -9,6 +9,7 @@ use SmartTextAi\auth\Authorization;
 use SmartTextAi\enums\openAi\ResponseEnum;
 use SmartTextAi\interfaces\AiProviderInterface;
 use SmartTextAi\interfaces\AiResponseInterface;
+use SmartTextAi\responses\openAi\BatchResponse;
 use SmartTextAi\responses\openAi\OpenAiFileResponse;
 use SmartTextAi\responses\openAi\OpenAiResponse;
 use SmartTextAi\url\OpenAiUrl;
@@ -30,13 +31,13 @@ class OpenAiProvider implements AiProviderInterface
      * @param array $body Request body
      * @param string $url API endpoint
      * @param string $method HTTP method (default: POST)
-     * @return AiResponseInterface|array|bool
+     * @return AiResponseInterface|OpenAiResponse|OpenAiFileResponse|BatchResponse
      * @throws \Exception
      */
-    public function sendRequest(array $body, string $url, string $method = 'POST')
+    public function sendRequest(array $body, string $url, string $method = 'POST', array $param = [])
     {
         try {
-            $options = $this->buildRequestOptions($body, $method);
+            $options = $this->buildRequestOptions($body, $method, $param);
             $response = $this->httpClient->request($method, $url, $options);
 
             return $this->handleResponse($response, $url, $method);
@@ -52,29 +53,38 @@ class OpenAiProvider implements AiProviderInterface
      * @param string $method
      * @return array
      */
-    private function buildRequestOptions(array $body, string $method): array
+    private function buildRequestOptions(array $body, string $method, array $queryParams = []): array
     {
         $headers = [
             'Authorization' => $this->authorization->getHeaders()['Authorization']
         ];
 
+        $options = [
+            'headers' => $headers,
+        ];
+
+        // Add query parameters if they are provided
+        if (!empty($queryParams)) {
+            $options['query'] = $queryParams;
+        }
+
+        // Handle GET method
         if ($method === 'GET') {
             $headers['Content-Type'] = 'application/json';
-            return ['headers' => $headers];
+            return $options;
         }
 
+        // Handle multipart form data
         if ($this->isMultipart($body)) {
-            return [
-                'headers' => $headers,
-                'multipart' => $this->buildMultipartBody($body)
-            ];
+            $options['multipart'] = $this->buildMultipartBody($body);
+            return $options;
         }
 
+        // Handle JSON body for other methods (e.g., POST, PUT)
         $headers['Content-Type'] = 'application/json';
-        return [
-            'headers' => $headers,
-            'body' => json_encode($body)
-        ];
+        $options['body'] = json_encode($body);
+
+        return $options;
     }
 
     /**
@@ -140,7 +150,17 @@ class OpenAiProvider implements AiProviderInterface
 
 
             if (!isset($data['object'])) {
-                return $data;
+                // Split the string into individual JSON objects if necessary
+                $jsonParts = explode("\n", $responseBody);
+                $parsedData = [];
+
+                foreach ($jsonParts as $jsonPart) {
+                    if ($jsonPart){
+                        $result = json_decode($jsonPart, true);
+                        $parsedData[] = new OpenAiResponse($result['response']['body']);
+                    }
+                }
+                return $parsedData;
             }
 
             $method = $this->getAiMethod($url);
@@ -243,19 +263,19 @@ class OpenAiProvider implements AiProviderInterface
     /**
      * @throws \Exception
      */
-    public function createBatch()
+    public function createBatch(array $body)
     {
         $url = OpenAiUrl::createBatchUrl();
-        return $this->sendRequest([], $url);
+        return $this->sendRequest($body, $url);
     }
 
     /**
      * @throws \Exception
      */
-    public function getBatchList()
+    public function getBatchList($param = [])
     {
         $url = OpenAiUrl::listBatchUrl();
-        return $this->sendRequest([], $url);
+        return $this->sendRequest([], $url, 'GET', $param);
     }
 
     /**
@@ -264,7 +284,7 @@ class OpenAiProvider implements AiProviderInterface
     public function getBatch(string $batch_id)
     {
         $url = OpenAiUrl::getBatchUrl($batch_id);
-        return $this->sendRequest([], $url);
+        return $this->sendRequest([], $url, 'GET');
     }
 
     /**
@@ -273,7 +293,7 @@ class OpenAiProvider implements AiProviderInterface
     public function cancelBatch(string $batch_id)
     {
         $url = OpenAiUrl::cancelBatchUrl($batch_id);
-        return $this->sendRequest([], $url);
+        return $this->sendRequest([], $url,);
     }
 
     /**

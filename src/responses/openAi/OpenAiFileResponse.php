@@ -27,6 +27,11 @@ class OpenAiFileResponse implements AiResponseInterface
         $this->status_details = $data['status_details'] ?? null;
     }
 
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
     /**
      * Get the purpose of the file
      *
