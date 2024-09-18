@@ -9,7 +9,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Abdurazzoq\\AI\\": "src/AI/"
+      "SmartTextAi\\": "src/"
     }
   },
   "require-dev": {

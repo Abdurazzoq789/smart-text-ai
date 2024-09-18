@@ -1,6 +1,6 @@
 <?php
 
-namespace Abdurazzoq\AI;
+namespace SmartTextAi;
 
 class ResponseFormatter
 {

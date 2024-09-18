@@ -1,8 +1,8 @@
 <?php
 
-namespace Abdurazzoq\AI\services;
+namespace SmartTextAi\services;
 
-use Abdurazzoq\AI\interfaces\AiProviderInterface;
+use SmartTextAi\interfaces\AiProviderInterface;
 
 class AiService
 {

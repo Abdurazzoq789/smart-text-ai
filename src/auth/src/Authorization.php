@@ -1,6 +1,6 @@
 <?php
 
-namespace Abdurazzoq\AI\auth;
+namespace SmartTextAi\auth;
 
 class Authorization
 {

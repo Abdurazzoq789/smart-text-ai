@@ -1,6 +1,6 @@
 <?php
 
-namespace Abdurazzoq\AI\interfaces;
+namespace SmartTextAi\interfaces;
 
 interface AiProviderInterface
 {

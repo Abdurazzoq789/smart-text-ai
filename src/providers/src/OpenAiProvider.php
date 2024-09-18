@@ -1,9 +1,9 @@
 <?php
 
-namespace Abdurazzoq\AI\providers\src;
+namespace SmartTextAi\providers\src;
 
-use Abdurazzoq\AI\auth\Authorization;
-use Abdurazzoq\AI\interfaces\AiProviderInterface;
+use SmartTextAi\auth\Authorization;
+use SmartTextAi\interfaces\AiProviderInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
 use Psr\Http\Client\ClientInterface;

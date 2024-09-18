@@ -1,6 +1,6 @@
 <?php
 
-namespace Abdurzzoq\AI;
+namespace SmartTextAi;
 
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
