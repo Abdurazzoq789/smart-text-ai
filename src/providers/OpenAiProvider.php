@@ -33,34 +33,60 @@ class OpenAiProvider implements AiProviderInterface
      */
     public function sendRequest(array $body, string $url): OpenAiResponse
     {
-        // For multipart, we won't JSON encode the body as we need a different format
-        $multipart = [];
-        foreach ($body as $name => $content) {
-            if ($name === 'file') {
-                $multipart[] = [
-                    'name' => $name,
-                    'contents' => fopen($content, 'r'),
-                    'filename' => basename($content)
-                ];
-            } else {
-                $multipart[] = [
-                    'name' => $name,
-                    'contents' => $content
-                ];
+        // Determine if the body contains a file
+        $isMultipart = false;
+        foreach ($body as $key => $value) {
+            if (is_array($value) && isset($value['file'])) {
+                $isMultipart = true;
+                break;
             }
         }
 
-        $response = $this->httpClient->request('POST', $url, [
-            'headers' => [
-                'Authorization' => $this->authorization->getHeaders()['Authorization'],
-            ],
-            'multipart' => $multipart
-        ]);
+        // Prepare headers
+        $headers = [
+            'Authorization' => $this->authorization->getHeaders()['Authorization'],
+        ];
+
+        if ($isMultipart) {
+            // Handle multipart data
+            $multipart = [];
+            foreach ($body as $name => $content) {
+                if (is_array($content) && isset($content['file'])) {
+                    $multipart[] = [
+                        'name' => $name,
+                        'contents' => fopen($content['file'], 'r'),
+                        'filename' => basename($content['file'])
+                    ];
+                } else {
+                    $multipart[] = [
+                        'name' => $name,
+                        'contents' => $content
+                    ];
+                }
+            }
+
+            $options = [
+                'headers' => $headers,
+                'multipart' => $multipart
+            ];
+        } else {
+            // Handle JSON data
+            $headers['Content-Type'] = 'application/json';
+            $body = json_encode($body);
+
+            $options = [
+                'headers' => $headers,
+                'body' => $body
+            ];
+        }
+
+        $response = $this->httpClient->request('POST', $url, $options);
 
         if ($response->getStatusCode() == 200) {
             $responseBody = $response->getBody()->getContents();
             $data = json_decode($responseBody, true);
 
+            // Return the custom class object
             return new OpenAiResponse($data);
         } else {
             // Parse the response body to extract the error message if available
