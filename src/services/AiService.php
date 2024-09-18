@@ -3,6 +3,7 @@
 namespace SmartTextAi\services;
 
 use SmartTextAi\interfaces\AiProviderInterface;
+use SmartTextAi\interfaces\AiResponseInterface;
 
 class AiService
 {
@@ -19,7 +20,7 @@ class AiService
      * @param array $body
      * @return array
      */
-    public function checkText(array $body): array
+    public function checkText(array $body): AiResponseInterface
     {
         return $this->aiProvider->checkText($body);
     }
