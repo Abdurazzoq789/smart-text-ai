@@ -7,6 +7,14 @@ class OpenAiUrl
     public const ORIGIN = 'https://api.openai.com';
     public const API_VERSION = 'v1';
     public const OPEN_AI_URL = self::ORIGIN . "/" . self::API_VERSION;
+    const BATCHES = 'batches';
+    const ENGINES = 'engines';
+    const COMPLETIONS = 'completions';
+    const EDITS = 'edits';
+    const AUDIO = 'audio';
+    const FILES = 'files';
+    const IMAGES = 'images';
+    const CHAT = 'chat';
 
     /**
      * @param string $engine
@@ -186,5 +194,34 @@ class OpenAiUrl
     public static function chatUrl(): string
     {
         return self::OPEN_AI_URL . "/chat/completions";
+    }
+
+    /**
+     * METHOD POST
+     *
+     * @return string
+     */
+    public static function createBatchUrl(): string
+    {
+        return self::OPEN_AI_URL . "/batches";
+    }
+
+    /**
+     * @param $batch_id
+     * @return string
+     */
+    public static function getBatchUrl($batch_id): string
+    {
+        return self::OPEN_AI_URL . "/batches/{$batch_id}";
+    }
+
+    /**
+     * METHOD GET
+     *
+     * @return string
+     */
+    public static function listBatchUrl(): string
+    {
+        return self::OPEN_AI_URL . "/batches";
     }
 }
