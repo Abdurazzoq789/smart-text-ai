@@ -129,10 +129,10 @@ class OpenAiProvider implements AiProviderInterface
 
     /**
      * @param array $body
-     * @return OpenAiResponse
+     * @return OpenAiResponse | OpenAiFileResponse
      * @throws ClientExceptionInterface
      */
-    public function uploadFile(array $body): OpenAiResponse
+    public function uploadFile(array $body): OpenAiFileResponse
     {
         $url = OpenAiUrl::filesUrl();
         return $this->sendRequest($body, $url);
