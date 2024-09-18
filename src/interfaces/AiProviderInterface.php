@@ -7,8 +7,8 @@ interface AiProviderInterface
     /**
      * Send a prompt to the AI tool and return the response.
      *
-     * @param string $text
+     * @param array $body
      * @return array
      */
-    public function sendRequest(string $text): array;
+    public function sendRequest(array $body): array;
 }

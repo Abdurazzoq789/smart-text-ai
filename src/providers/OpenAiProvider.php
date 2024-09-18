@@ -4,10 +4,12 @@ namespace SmartTextAi\providers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use SmartTextAi\auth\Authorization;
 use SmartTextAi\interfaces\AiProviderInterface;
+use SmartTextAi\Url;
 
 class OpenAiProvider implements AiProviderInterface
 {
@@ -23,19 +25,23 @@ class OpenAiProvider implements AiProviderInterface
     }
 
     /**
-     * Send a prompt to the OpenAI API and return the response.
-     *
-     * @param string $text
+     * @param array $body
      * @return string[]
      * @throws \Psr\Http\Client\ClientExceptionInterface
      */
-    public function sendRequest(string $text): array
+    public function sendRequest(array $body): array
     {
-        // Create the request for OpenAI
-        $request = $this->requestFactory->createRequest('POST', 'https://api.openai.com/v1/completions')
+        $url = Url::chatUrl();
+        // Prepare the body as a JSON string
+        $body = json_encode($body);
+
+        // Convert the body to a stream
+        $streamBody = Utils::streamFor($body);
+
+        $request = $this->requestFactory->createRequest('POST', $url)
             ->withHeader('Authorization', $this->authorization->getHeaders()['Authorization'])
             ->withHeader('Content-Type', $this->authorization->getHeaders()['Content-Type'])
-            ->withBody(json_encode(['prompt' => $text, 'max_tokens' => 100]));
+            ->withBody($streamBody);
 
         try {
             $response = $this->httpClient->sendRequest($request);
