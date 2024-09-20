@@ -2,6 +2,8 @@
 
 namespace SmartTextAi\responses\openAi;
 
+use SmartTextAi\enums\openAi\BatchStatusEnum;
+
 class BatchResponse
 {
     private ?string $id;
@@ -141,5 +143,15 @@ class BatchResponse
     public function getMetadata(): array
     {
         return $this->metadata;
+    }
+
+    public function inProgress(): bool
+    {
+        return $this->status == BatchStatusEnum::STATUS_IN_PROGRESS;
+    }
+
+    public function mustRetry(): bool
+    {
+        return in_array($this->status, BatchStatusEnum::MUST_RETRY_STATUSES);
     }
 }
