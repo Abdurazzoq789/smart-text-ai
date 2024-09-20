@@ -10,6 +10,7 @@ use SmartTextAi\enums\openAi\ResponseEnum;
 use SmartTextAi\interfaces\AiProviderInterface;
 use SmartTextAi\interfaces\AiResponseInterface;
 use SmartTextAi\responses\openAi\BatchResponse;
+use SmartTextAi\responses\openAi\FileContentResponse;
 use SmartTextAi\responses\openAi\OpenAiFileResponse;
 use SmartTextAi\responses\openAi\OpenAiResponse;
 use SmartTextAi\url\OpenAiUrl;
@@ -157,7 +158,7 @@ class OpenAiProvider implements AiProviderInterface
                 foreach ($jsonParts as $jsonPart) {
                     if ($jsonPart){
                         $result = json_decode($jsonPart, true);
-                        $parsedData[] = new OpenAiResponse($result['response']['body']);
+                        $parsedData[] = new FileContentResponse($result);
                     }
                 }
                 return $parsedData;
@@ -240,7 +241,7 @@ class OpenAiProvider implements AiProviderInterface
 
     /**
      * @param string $id
-     * @return array|bool|AiResponseInterface|OpenAiFileResponse|OpenAiResponse
+     * @return FileContentResponse
      * @throws \Exception
      */
     public function getFileContent(string $id)
