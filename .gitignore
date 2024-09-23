@@ -59,3 +59,4 @@ config.php
 
 # Composer vendor and autoload files
 composer.phar
+/test/

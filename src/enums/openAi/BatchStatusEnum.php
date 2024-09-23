@@ -48,6 +48,7 @@ interface BatchStatusEnum
         self::STATUS_EXPIRED,
         self::STATUS_CANCELED,
         self::STATUS_CANCELLING,
+        self::STATUS_FILED,
     ];
 
 }
