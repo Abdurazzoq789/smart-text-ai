@@ -40,7 +40,7 @@ interface BatchStatusEnum
     public const STATUS_CANCELLING = 'cancelling';
 
     /**
-     *	the batch was cancelled
+     *    the batch was cancelled
      */
     public const STATUS_CANCELED = 'cancelled';
 
@@ -49,6 +49,11 @@ interface BatchStatusEnum
         self::STATUS_CANCELED,
         self::STATUS_CANCELLING,
         self::STATUS_FILED,
+    ];
+    const IN_PROGRESS_STATUSES = [
+        self::STATUS_IN_PROGRESS,
+        self::STATUS_VALIDATING,
+        self::STATUS_FINALIZING
     ];
 
 }
