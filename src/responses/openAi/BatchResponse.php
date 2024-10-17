@@ -147,7 +147,7 @@ class BatchResponse
 
     public function inProgress(): bool
     {
-        return $this->status == BatchStatusEnum::STATUS_IN_PROGRESS;
+        return in_array($this->status, [BatchStatusEnum::STATUS_IN_PROGRESS, BatchStatusEnum::STATUS_VALIDATING]);
     }
 
     public function mustRetry(): bool
