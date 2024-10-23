@@ -204,7 +204,7 @@ class OpenAiProvider implements AiProviderInterface
     public function checkText(array $body)
     {
         $url = OpenAiUrl::chatUrl();
-        return $this->sendRequest($body, $url, 'GET');
+        return $this->sendRequest($body, $url);
     }
 
     /**
