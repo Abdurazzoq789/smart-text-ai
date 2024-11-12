@@ -209,7 +209,7 @@ class OpenAiProvider implements AiProviderInterface
     public function checkText(array $body)
     {
         $url = OpenAiUrl::chatUrl();
-        return $this->sendRequest($body, $url);
+        return $this->sendRequest($body, $url, "application/json");
     }
 
     /**
@@ -230,7 +230,7 @@ class OpenAiProvider implements AiProviderInterface
     public function getFiles(): array
     {
         $url = OpenAiUrl::filesUrl();
-        return $this->sendRequest([], $url, 'application-json','GET');
+        return $this->sendRequest([], $url, 'application/json','GET');
     }
 
     /**
@@ -241,7 +241,7 @@ class OpenAiProvider implements AiProviderInterface
     public function getFile(string $id)
     {
         $url = OpenAiUrl::fileUrl($id);
-        return $this->sendRequest([], $url, 'application-json','GET');
+        return $this->sendRequest([], $url, 'application/json','GET');
     }
 
     /**
@@ -252,7 +252,7 @@ class OpenAiProvider implements AiProviderInterface
     public function getFileContent(string $id)
     {
         $url = OpenAiUrl::fileContentUrl($id);
-        return $this->sendRequest([], $url, 'application-json','GET');
+        return $this->sendRequest([], $url, 'application/json','GET');
     }
 
     /**
@@ -281,7 +281,7 @@ class OpenAiProvider implements AiProviderInterface
     public function getBatchList($param = [])
     {
         $url = OpenAiUrl::listBatchUrl();
-        return $this->sendRequest([], $url, 'application-json','GET', $param);
+        return $this->sendRequest([], $url, 'application/json','GET', $param);
     }
 
     /**
@@ -290,7 +290,7 @@ class OpenAiProvider implements AiProviderInterface
     public function getBatch(string $batch_id)
     {
         $url = OpenAiUrl::getBatchUrl($batch_id);
-        return $this->sendRequest([], $url, 'application-json', 'GET');
+        return $this->sendRequest([], $url, 'application/json', 'GET');
     }
 
     /**
