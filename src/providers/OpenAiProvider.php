@@ -263,7 +263,7 @@ class OpenAiProvider implements AiProviderInterface
     public function deleteFile(string $id): bool
     {
         $url = OpenAiUrl::deleteFileUrl($id);
-        return $this->sendRequest([], $url, 'DELETE');
+        return $this->sendRequest([], $url, 'application/json', 'DELETE');
     }
 
     /**
